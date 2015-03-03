@@ -18,10 +18,6 @@
 char i=0;
 int x=0;
 
-
-char anykey(void);
-char getkey(void);
-
 int main(void) {
  
 	//*******Local Variable Decalrations for main *****************
@@ -74,17 +70,13 @@ int main(void) {
 //Initialize the lcd
     LCD_init(DISPLAY_8X5|_2_LINES,DISPLAY_ON|CURSOR_OFF|CURSOR_BLINK);
 //Initialize the ADC for the pot
-     adc0_init();
+     init_adc0();
      init_gpio_e(21,1);
      gpo_e(21,1);   //Turn on and off the high side switch
     		 
     
     //syst_tick_init();       
 
- 
-	
-
-     
 // Convert the specific pins to the GPIO module.  Pins B18,B19, D1
      
 	 LCD_send_byte(1,'a');
@@ -127,93 +119,3 @@ int main(void) {
 	
 	return 0;
     }
-
-
-char anykey(void){
-	char temp=0;
-	GPIOB_PDOR&=0xf0;
-	delay_100us(1);
-	temp=GPIOE_PDIR;
-	if((temp&0x0f)==0x0f)return 0;
-	else return 1;
-}
-
-char getkey(void){
-	char temp=0;
-	
-	    GPIOB_PDOR&=0xf0;
-	    GPIOB_PDOR|=0x07;
-		delay_100us(1);
-		
-		temp=GPIOE_PDIR;
-		temp&=0x0f;
-		if(temp==0x07)return 'D';
-		else if(temp==0x0b)return '#';
-		else if(temp==0x0d)return '0';
-		else if(temp==0x0e)return '*';
-
-	    GPIOB_PDOR&=0xf0;
-		GPIOB_PDOR|=0x0b;
-		delay_100us(1);
-
-		temp=GPIOE_PDIR;
-		temp&=0x0f;
-		if(temp==0x07)return 'C';
-		else if(temp==0x0b)return '9';
-		else if(temp==0x0d)return '8';
-		else if(temp==0x0e)return '7';
-
-	    GPIOB_PDOR&=0xf0;
-		GPIOB_PDOR|=0x0d;
-		delay_100us(1);
-				
-		temp=GPIOE_PDIR;
-		temp&=0x0f;
-		if(temp==0x07)return 'B';
-		else if(temp==0x0b)return '6';
-		else if(temp==0x0d)return '5';
-		else if(temp==0x0e)return '4';
-
-	    GPIOB_PDOR&=0xf0;
-		GPIOB_PDOR|=0x0e;
-		delay_100us(1);
-				
-		temp=GPIOE_PDIR;
-		temp&=0x0f;
-		if(temp==0x07)return 'A';
-		else if(temp==0x0b)return '3';
-		else if(temp==0x0d)return '2';
-		else if(temp==0x0e)return '1';
-
-}
-
-/*
- *******************************************************************            
- This program assumes this connectivity to ports E and B
- If we input to the column pins, B0:3, then we can 
- read E0:3 as input.  Since the input pins are internally
- tied high, we can look for low values.
-
-  Look at the board from front, orient the pins at the
-  bottom, count left to right.
-   
-  
-      e0  e1  e2  e3
-    +---+---+---+---+
- b0 | 1 | 2 | 3 | A |
-    +---+---+---+---+
- b1 | 4 | 5 | 6 | B |
-    +---+---+---+---+
- b2 | 7 | 8 | 9 | C |
-    +---+---+---+---+
- b3 | * | 0 | # | D |
-    +---+---+---+---+ 
-
-   1  2  3  4  5  6  7  8  
-   o  o  o  o  o  o  o  o
-   e0 e1 e2 e3 b0 b1 b2 b3
-
-
- * */
- 
-
